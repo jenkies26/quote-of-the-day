@@ -88,6 +88,27 @@
       background: #ff4d4d;
       color: white;
       border: none;
+      .quote-style {
+  padding: 20px;
+  width: 300px;
+  margin: auto;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 15px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.love-theme {
+  background: linear-gradient(135deg, #FF9A9E, #FDCB82);
+}
+.wisdom-theme {
+  background: linear-gradient(135deg, #43CEA2, #185A9D);
+}
+.motivation-theme {
+  background: linear-gradient(135deg, #FAD961, #F76B1C);
+}
+
       border-radius: 50%;
       width: 25px;
       height: 25px;
@@ -97,7 +118,34 @@
 
     .delete-btn:hover {
       background: #e60000;
-    }
+    }<!-- Quote display -->
+<div id="quote-card" class="quote-style love-theme">
+  <div id="quote-card" class="quote-style love-theme">
+  <h2 id="quote-text">Click New Quote to see a quote.</h2>
+  <p id="quote-author"></p>
+</div>
+
+<label for="category-select">Choose a wallpaper theme:</label>
+<select id="category-select" onchange="setWallpaperTheme()">
+  <option value="love">💘 Love</option>
+  <option value="wisdom">💡 Wisdom</option>
+  <option value="motivation">🎯 Motivation</option>
+</select>
+
+<button onclick="downloadQuoteImage()">Save as Wallpaper</button>
+
+
+
+<!-- Wallpaper Controls -->
+<label for="category-select">Choose a wallpaper theme:</label>
+<select id="category-select" onchange="setWallpaperTheme()">
+  <option value="love">💘 Love</option>
+  <option value="wisdom">💡 Wisdom</option>
+  <option value="motivation">🎯 Motivation</option>
+</select>
+
+<button onclick="downloadQuoteImage()">Save as Wallpaper</button>
+
 
     #clear-btn {
       background-color: #f44336;
@@ -184,9 +232,9 @@
       currentQuote = selected.quote;
       currentAuthor = selected.author;
 
-      document.getElementById("quote").innerText = `"${currentQuote}"`;
-      document.getElementById("author").innerText = `- ${currentAuthor}`;
-    }
+      document.getElementById("quote-text").textContent = quote.text;
+document.getElementById("quote-author").textContent = `— ${quote.author}`;
+
 
     function copyQuote() {
       const textToCopy = `"${currentQuote}" - ${currentAuthor}`;
@@ -245,7 +293,28 @@
     }
 
     // Load favorites on page load
-    displayFavorites();
+    displayFavorites();<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  function setWallpaperTheme() {
+    const card = document.getElementById("quote-card");
+    card.classList.remove("love-theme", "wisdom-theme", "motivation-theme");
+    
+    const category = document.getElementById("category-select").value;
+    card.classList.add(`${category}-theme`);
+  }
+
+  function downloadQuoteImage() {
+    html2canvas(document.querySelector("#quote-card")).then(canvas => {
+      let link = document.createElement('a');
+      link.download = 'quote-wallpaper.png';
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  }
+
+  setWallpaperTheme();
+</script>
+
   </script>
 </body>
 </html>
