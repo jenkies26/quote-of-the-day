@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quote of the Day</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      background: linear-gradient(to right, #83a4d4, #b6fbff);
+      color: #333;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    #quote {
+      font-size: 24px;
+      margin: 20px;
+      max-width: 700px;
+    }
+
+    #author {
+      font-size: 20px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #favorites {
+      margin-top: 40px;
+      max-width: 700px;
+      text-align: left;
+    }
+
+    #favorites h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .favorite {
+      margin: 10px 0;
+      padding: 10px;
+      background: #fff;
+      border-left: 4px solid #4CAF50;
+      position: relative;
+    }
+
+    .favorite-author {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background: #e60000;
+    }
+
+    #clear-btn {
+      background-color: #f44336;
+    }
+
+    #clear-btn:hover {
+      background-color: #da190b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quote of the Day</h1>
+
+  <!-- Category selector -->
+  <label for="category">Choose a category:</label>
+  <select id="category">
+    <option value="love">Love</option>
+    <option value="life">Life</option>
+    <option value="inspirational">Inspirational</option>
+    <option value="humor">Humor</option>
+    <option value="philosophy">Philosophy</option>
+    <option value="god">God</option>
+    <option value="truth">Truth</option>
+  </select>
+
+  <!-- Quote display -->
+  <div id="quote">Click New Quote to see a quote.</div>
+  <div id="author"></div>
+
+  <!-- Action buttons -->
+  <button onclick="newQuote()">New Quote</button>
+  <button onclick="copyQuote()">Copy Quote</button>
+  <button onclick="tweetQuote()">Tweet Quote</button>
+  <button onclick="saveFavorite()">Save Favorite</button>
+
+  <!-- Favorites -->
+  <div id="favorites">
+    <h2>Favorite Quotes</h2>
+    <button id="clear-btn" onclick="clearFavorites()">Clear All Favorites</button>
+    <div id="favorites-list"></div>
+  </div>
+
+  <script>
+    // Your categorized quotes
+    const quotes = {
+      love: [
+        { quote: "Love all, trust a few, do wrong to none.", author: "William Shakespeare" },
+        { quote: "We accept the love we think we deserve.", author: "Stephen Chbosky" },
+      ],
+      life: [
+        { quote: "Life is what happens when you’re busy making other plans.", author: "John Lennon" },
+        { quote: "Get busy living or get busy dying.", author: "Stephen King" },
+      ],
+      inspirational: [
+        { quote: "The best way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+        { quote: "Your limitation—it’s only your imagination.", author: "Unknown" },
+      ],
+      humor: [
+        { quote: "I'm not arguing, I'm just explaining why I'm right.", author: "Anonymous" },
+        { quote: "I'm on a seafood diet. I see food and I eat it.", author: "Anonymous" },
+      ],
+      philosophy: [
+        { quote: "The unexamined life is not worth living.", author: "Socrates" },
+        { quote: "I think therefore I am.", author: "Descartes" },
+      ],
+      god: [
+        { quote: "I can do all things through Christ who strengthens me.", author: "Philippians 4:13" },
+        { quote: "Be still, and know that I am God.", author: "Psalm 46:10" },
+      ],
+      truth: [
+        { quote: "Three things cannot be long hidden: the sun, the moon, and the truth.", author: "Buddha" },
+        { quote: "Rather than love, than money, than fame, give me truth.", author: "Henry David Thoreau" },
+      ]
+    };
+
+    let currentQuote = "";
+    let currentAuthor = "";
+
+    function newQuote() {
+      const category = document.getElementById("category").value;
+      const categoryQuotes = quotes[category];
+      const randomIndex = Math.floor(Math.random() * categoryQuotes.length);
+      const selected = categoryQuotes[randomIndex];
+      currentQuote = selected.quote;
+      currentAuthor = selected.author;
+
+      document.getElementById("quote").innerText = `"${currentQuote}"`;
+      document.getElementById("author").innerText = `- ${currentAuthor}`;
+    }
+
+    function copyQuote() {
+      const textToCopy = `"${currentQuote}" - ${currentAuthor}`;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => alert("Quote copied to clipboard!"))
+        .catch(err => console.error("Failed to copy: ", err));
+    }
+
+    function tweetQuote() {
+      const tweetText = encodeURIComponent(`"${currentQuote}" - ${currentAuthor}`);
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+      window.open(tweetUrl, '_blank');
+    }
+
+    function saveFavorite() {
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      favorites.push({ quote: currentQuote, author: currentAuthor });
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      displayFavorites();
+    }
+
+    function deleteFavorite(index) {
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      favorites.splice(index, 1);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      displayFavorites();
+    }
+
+    function clearFavorites() {
+      if (confirm("Are you sure you want to clear all favorites?")) {
+        localStorage.removeItem("favorites");
+        displayFavorites();
+      }
+    }
+
+    function displayFavorites() {
+      const favoritesList = document.getElementById("favorites-list");
+      favoritesList.innerHTML = "";
+
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+      if (favorites.length === 0) {
+        favoritesList.innerHTML = "<p>No favorites saved yet.</p>";
+      } else {
+        favorites.forEach((fav, index) => {
+          const div = document.createElement("div");
+          div.className = "favorite";
+          div.innerHTML = `
+            <div>"${fav.quote}"</div>
+            <div class="favorite-author">- ${fav.author}</div>
+            <button class="delete-btn" onclick="deleteFavorite(${index})">✖</button>
+          `;
+          favoritesList.appendChild(div);
+        });
+      }
+    }
+
+    // Load favorites on page load
+    displayFavorites();
+  </script>
+</body>
+</html>
